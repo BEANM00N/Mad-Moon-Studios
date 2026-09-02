@@ -1,0 +1,24 @@
+{{ if .IsHome }}
+<iframe 
+  src="/3d.html" 
+  allowtransparency="true" 
+  style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; border: none; background: transparent; z-index: 0; pointer-events: auto;"
+></iframe>
+
+<style>
+  /* Make site backgrounds transparent so the 3D canvas shows through */
+  body, #page-bg, .home-section-bg {
+    background: transparent !important;
+  }
+  /* Layer page content above the 3D canvas while passing through mouse clicks */
+  .page-body, .page-header, .page-footer {
+    position: relative;
+    z-index: 10;
+    pointer-events: none;
+  }
+  /* Keep interactive elements clickable */
+  a, button, input, label, .navbar, .theme-toggle {
+    pointer-events: auto !important;
+  }
+</style>
+{{ end }}

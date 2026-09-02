@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="color-scheme" content="dark light">
+  <style>
+    html, body { 
+      margin: 0; padding: 0; width: 100%; height: 100%; 
+      overflow: hidden; background: transparent !important; 
+    }
+    canvas { 
+      display: block; width: 100% !important; height: 100% !important; 
+      background: transparent !important; 
+    }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+    import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+
+    // 1. Scene & Camera Setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+    camera.position.set(0, 0, 1.5);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setClearColor(0x000000, 0); 
+    renderer.setSize(720, 720);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    document.body.appendChild(renderer.domElement);
+
+    // 2. Post-Processing Setup
+    const composer = new EffectComposer(renderer);
+    const renderPass = new RenderPass(scene, camera);
+    renderPass.clearAlpha = 0;
+    composer.addPass(renderPass);
+
+    const bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(180, 180), 
+      0.35, 0.15, 0.90
+    );
+    composer.addPass(bloomPass);
+
+    // 3. Radial Alpha-Fade Pass
+    const RadialEdgeFadeShader = {
+      uniforms: { 'tDiffuse': { value: null } },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform sampler2D tDiffuse;
+        varying vec2 vUv;
+        void main() {
+          vec4 col = texture2D(tDiffuse, vUv);
+          float alpha = max(col.r, max(col.g, col.b));
+          
+          float dist = distance(vUv, vec2(0.5));
+          float radialMask = smoothstep(0.48, 0.30, dist);
+          
+          gl_FragColor = vec4(col.rgb, clamp(alpha * radialMask, 0.0, 1.0));
+        }
+      `
+    };
+    composer.addPass(new ShaderPass(RadialEdgeFadeShader));
+
+    // 4. Controls
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.enableZoom = false;
+
+    // 5. Load Model
+    let modelMesh = null;
+    const loader = new GLTFLoader();
+    
+    loader.load('/models/Logo.glb', (gltf) => {
+      modelMesh = gltf.scene;
+      
+      const vertexShader = `
+        varying vec3 vNormal;
+        varying vec3 vViewPosition;
+        varying vec3 vWorldPosition;
+        void main() {
+          vec4 worldPos = modelMatrix * vec4(position, 1.0);
+          vWorldPosition = worldPos.xyz;
+          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+          vNormal = normalize(normalMatrix * normal);
+          vViewPosition = -mvPosition.xyz;
+          gl_Position = projectionMatrix * mvPosition;
+        }
+      `;
+
+      const fragmentShader = `
+        varying vec3 vNormal;
+        varying vec3 vViewPosition;
+        varying vec3 vWorldPosition;
+        const float PI = 3.14159265359;
+
+        // Warm Warm Gold-Reflecting Studio Environment Map
+        vec3 sampleProceduralEnv(vec3 dir) {
+          float azimuth = atan(dir.z, dir.x) / (2.0 * PI) + 0.5;
+          float altitude = acos(clamp(dir.y, -1.0, 1.0)) / PI;
+          
+          vec3 sky = vec3(1.0, 0.96, 0.88);      // Soft White Gold Sky
+          vec3 horizon = vec3(0.96, 0.82, 0.55);  // Honey Gold Horizon
+          vec3 ground = vec3(0.80, 0.60, 0.45);   // Soft Bronze Ground
+          
+          vec3 env = mix(ground, horizon, smoothstep(0.2, 0.5, altitude));
+          env = mix(env, sky, smoothstep(0.5, 0.8, altitude));
+
+          vec3 keyLight1 = normalize(vec3(0.7, 0.8, 0.8));
+          vec3 keyLight2 = normalize(vec3(-2.0, 2.0, -1.5));
+          float spot1 = pow(max(0.0, dot(dir, keyLight1)), 64.0) * 3.5;
+          float spot2 = pow(max(0.0, dot(dir, keyLight2)), 48.0) * 2.0;
+          return env + vec3(spot1 + spot2) * vec3(1.0, 0.95, 0.82);
+        }
+
+        void main() {
+          vec3 normal = normalize(vNormal);
+          if (!gl_FrontFacing) normal = -normal;
+
+          vec3 viewDir = normalize(vViewPosition);
+          float NdotV = max(0.0, dot(normal, viewDir));
+          float fresnel = pow(1.0 - NdotV, 2.2);
+
+          vec3 refrDir = normalize(viewDir - normal * 0.45);
+          float shift = dot(refrDir, normal) * 4.5;
+          
+          // Full-Spectrum Pearlescent Iridescence (Vivid Pinks, Cyans, Violets, and Gold)
+          vec3 iridescence = vec3(
+            0.65 + 0.35 * sin(fresnel * 9.0 + shift),
+            0.55 + 0.45 * sin(fresnel * 9.0 + shift + 2.094),
+            0.75 + 0.25 * sin(fresnel * 9.0 + shift + 4.188)
+          );
+
+          // Warm Champagne-Gold Base Body
+          vec3 baseGold = vec3(0.96, 0.86, 0.58);
+
+          // Blend Gold Base in center -> Rich Pearlescent Spectrum along edges & refractions
+          vec3 pearlGlassBody = mix(baseGold, iridescence, 0.40 + fresnel * 0.50);
+
+          vec3 reflectDir = reflect(-viewDir, normal);
+          vec3 envMapColor = sampleProceduralEnv(reflectDir);
+          float mixRatio = clamp(0.15 + fresnel * 0.70, 0.1, 0.95);
+          vec3 surfaceColor = mix(pearlGlassBody, envMapColor, mixRatio * 0.45);
+
+          // Cracked Bevel Edge Highlights
+          vec3 dNdx = dFdx(normal);
+          vec3 dNdy = dFdy(normal);
+          float edgeCurvature = length(dNdx) + length(dNdy);
+          float edgeMask = smoothstep(0.08, 0.35, edgeCurvature);
+
+          vec3 crackPos = vWorldPosition * 40.0;
+          float crackCell = fract(sin(dot(floor(crackPos), vec3(12.9898, 78.233, 45.164))) * 43758.5453);
+          float crackPattern = step(0.60, crackCell) * edgeMask;
+          vec3 crackedBevelGlint = vec3(1.0, 0.92, 0.70) * crackPattern * 2.5;
+
+          vec3 lightDir = normalize(vec3(0.7, 0.8, 0.8));
+          vec3 halfVec = normalize(lightDir + viewDir);
+          float NdotH = max(0.0, dot(normal, halfVec));
+
+          vec3 viewTangX = normalize(cross(viewDir, vec3(0.0, 1.0, 0.0) + vec3(0.001)));
+          vec3 viewTangY = cross(viewDir, viewTangX);
+          vec3 diffVec = normal - halfVec;
+          float projX = dot(diffVec, viewTangX);
+          float projY = dot(diffVec, viewTangY);
+
+          float beamH  = exp(-abs(projY) * 55.0) * exp(-abs(projX) * 2.5);
+          float beamV  = exp(-abs(projX) * 55.0) * exp(-abs(projY) * 2.5);
+          float beamD1 = exp(-abs(projX - projY) * 40.0) * exp(-abs(projX + projY) * 2.5);
+          float beamD2 = exp(-abs(projX + projY) * 40.0) * exp(-abs(projX - projY) * 2.5);
+
+          float starburst = (beamH + beamV + (beamD1 + beamD2) * 0.6) * pow(NdotH, 10.0);
+          vec3 flareColor = vec3(1.0, 0.94, 0.78) + 0.3 * sin(vec3(0.0, 2.0, 4.0) + projX * 10.0);
+          vec3 lensFlareColor = flareColor * starburst * 3.0;
+
+          float sharpSpec = pow(NdotH, 128.0) * 2.2;
+          vec3 specularColor = vec3(1.0, 0.95, 0.82) * sharpSpec;
+
+          vec3 finalColor = surfaceColor + crackedBevelGlint + specularColor + lensFlareColor;
+
+          gl_FragColor = vec4(finalColor, clamp(0.65 + fresnel * 0.30, 0.0, 1.0));
+        }
+      `;
+
+      const customPearlMaterial = new THREE.ShaderMaterial({
+        vertexShader, fragmentShader, side: THREE.FrontSide,
+        transparent: true, depthWrite: true, blending: THREE.NormalBlending
+      });
+
+      modelMesh.traverse((child) => {
+        if (child.isMesh) {
+          child.material = customPearlMaterial;
+          child.geometry.computeVertexNormals(); 
+        }
+      });
+      
+      const box = new THREE.Box3().setFromObject(modelMesh);
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+      modelMesh.position.sub(center);
+
+      const maxDim = Math.max(size.x, size.y, size.z);
+      if (maxDim > 0) {
+        modelMesh.scale.setScalar(1 / maxDim);
+      }
+
+      scene.add(modelMesh);
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (modelMesh) modelMesh.rotation.y += 0.006;
+      controls.update();
+      composer.render();
+    }
+    animate();
+  </script>
+</body>
+</html>

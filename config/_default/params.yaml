@@ -10,9 +10,9 @@ hugoblox:
   # IDENTITY
   # ────────────────────────────────────────────────────────────────────────────
   identity:
-    name: "HugoBlox Starter"
+    name: "Mad Moon Studios"
     organization: ""
-    type: person # person | organization | local_business
+    type: local_business # person | organization | local_business
     tagline: ""
     description: ""
     social:
@@ -25,6 +25,14 @@ hugoblox:
     mode: system # light | dark | system
     pack: "default"
     colors:
+      primary: ""
+      secondary: ""
+      neutral: ""
+    colors_dark:
+      primary: ""
+      secondary: ""
+      neutral: ""
+    colors_light:
       primary: ""
       secondary: ""
       neutral: ""
@@ -64,7 +72,7 @@ hugoblox:
   # COPYRIGHT
   # ────────────────────────────────────────────────────────────────────────────
   copyright:
-    notice: "© {year} {name}"
+    notice: "© {year} {name}. All rights reserved."
 
   # ────────────────────────────────────────────────────────────────────────────
   # CONTENT

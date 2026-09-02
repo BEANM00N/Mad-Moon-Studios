@@ -1,0 +1,49 @@
+{{ if .IsHome }}
+<!-- Full-Viewport 3D Canvas Background -->
+<iframe 
+  src="/3d.html" 
+  allowtransparency="true" 
+  id="bg-3d-iframe"
+  style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; border: none; background: transparent; z-index: 0; pointer-events: auto;"
+></iframe>
+
+<style>
+  /* 1. Header Background & Text Color Override */
+  #site-header,
+  .page-header,
+  header.header {
+    background-color: #000000 !important; /* Change #000000 to 'transparent' or any hex color */
+    background: #000000 !important;
+  }
+
+  /* 2. Footer Background & Text Color Override */
+  .page-footer,
+  footer {
+    background-color: #000000 !important; /* Change #000000 to 'transparent' or any hex color */
+    background: #000000 !important;
+  }
+
+  /* 3. Hide Creative Commons icons above copyright */
+  .footer-license-icons {
+    display: none !important;
+  }
+
+  /* 4. Hide 'Made with Hugo Blox Kit' and 'Build your site' links below copyright */
+  .page-footer p.py-1,
+  .page-footer p:last-child {
+    display: none !important;
+  }
+
+  /* 5. Ensure page text sits above 3D canvas and clicks pass through */
+  .page-body, .page-header, .page-footer {
+    position: relative;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  /* Keep interactive elements clickable */
+  a, button, input, label, .navbar, .theme-toggle {
+    pointer-events: auto !important;
+  }
+</style>
+{{ end }}
