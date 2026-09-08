@@ -7,6 +7,7 @@ sections:
       title: ""
       text: |
         <style>
+          /* Hover Animation */
           .hover-pop {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
           }
@@ -15,25 +16,50 @@ sections:
             box-shadow: 0 25px 40px rgba(0, 0, 0, 0.8) !important;
             border-color: rgba(255, 85, 0, 0.6) !important;
           }
+          
+          /* Desktop Layout Defaults */
+          .responsive-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 4rem;
+            align-items: center;
+            width: 100%;
+            margin: auto 0;
+            transform: translateY(-80px);
+          }
+          .logo-iframe { width: 160px; height: 160px; }
+          .logo-text { font-size: 2.4rem; }
+
+          /* Mobile Layout Overrides (Triggers on screens smaller than 992px) */
+          @media (max-width: 992px) {
+            .responsive-grid {
+              grid-template-columns: 1fr; /* Stacks to a single column */
+              gap: 2.5rem;
+              transform: translateY(0px); /* Removes the upward shift so it doesn't overlap the logo */
+              margin: 2rem 0 4rem 0;
+            }
+            .logo-iframe { width: 110px; height: 110px; }
+            .logo-text { font-size: 1.8rem; }
+          }
         </style>
 
-        <!-- Viewport Breakout Container (Widens the layout) -->
+        <!-- Viewport Breakout Container -->
         <div style="width: min(1500px, 92vw); position: relative; left: 50%; transform: translateX(-50%); min-height: 85vh; text-align: left; color: #ffffff; font-family: 'Roboto', sans-serif; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;">
           
           <!-- Top-Left Logo & Branding -->
-          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-            <iframe src="/3d.html" allowtransparency="true" style="width: 160px; height: 160px; border: none; background: transparent; display: block; flex-shrink: 0;"></iframe>
-            <span style="color: #FEFEE2; font-size: 2.4rem; font-weight: 800; line-height: 1.1; letter-spacing: 0.04em;">
+          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; margin-top: 2rem;">
+            <iframe src="/3d.html" allowtransparency="true" class="logo-iframe" style="border: none; background: transparent; display: block; flex-shrink: 0;"></iframe>
+            <span class="logo-text" style="color: #FEFEE2; font-weight: 800; line-height: 1.1; letter-spacing: 0.04em;">
               MAD MOON<br>STUDIOS
             </span>
           </div>
 
-          <!-- Wide 2-Column Grid Split -->
-          <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 4rem; align-items: center; width: 100%; margin: auto 0; transform: translateY(-80px);">
+          <!-- Responsive Grid Split -->
+          <div class="responsive-grid">
             
-            <!-- Left Column: Text Inside Dark Box (Grid Item 1) -->
-            <div style="background: rgba(18, 18, 18, 0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 20px; padding: 1.2rem; box-shadow: 0 20px 30px rgba(0, 0, 0, 0.6);">
-              <h1 style="font-size: 2.4rem; font-weight: 800; line-height: 1.2; color: #ffffff; margin-top: 0; margin-bottom: 1.25rem;">
+            <!-- Left Column: Text Inside Dark Box -->
+            <div style="background: rgba(18, 18, 18, 0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 20px; padding: 1.5rem; box-shadow: 0 20px 30px rgba(0, 0, 0, 0.6);">
+              <h1 style="font-size: 2.2rem; font-weight: 800; line-height: 1.2; color: #ffffff; margin-top: 0; margin-bottom: 1.25rem;">
                 Mad Moon Studios is an indie game development team based in Belfast
               </h1>
               
@@ -47,12 +73,10 @@ sections:
               </p>
             </div>
 
-            <!-- Right Column: clickable Video Embed (Grid Item 2) -->
+            <!-- Right Column: Clickable Video Embed -->
             <div class="hover-pop" style="position: relative; width: 100%; max-width: 700px; margin: 0 auto; border-radius: 12px; overflow: hidden; border: 2px solid rgba(255, 255, 255, 0.2); box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);">
               
-              <!-- 16:9 Aspect Ratio Wrapper -->
               <div style="position: relative; padding-bottom: 56.25%; height: 0;">
-                <!-- controls=0 hides the player UI, rel=0 hides related videos -->
                 <iframe src="https://www.youtube.com/embed/RBfGwsypPt4?autoplay=1&mute=1&loop=1&playlist=RBfGwsypPt4&controls=0&modestbranding=1&rel=0&disablekb=1" 
                         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; pointer-events: none;" 
                         allow="autoplay; encrypted-media" 
@@ -60,7 +84,6 @@ sections:
                 </iframe>
               </div>
               
-              <!-- Invisible Link Overlay to open YouTube in a new tab -->
               <a href="https://youtu.be/RBfGwsypPt4" target="_blank" rel="noopener noreferrer" style="position: absolute; inset: 0; z-index: 10; display: block;"></a>
               
             </div>
