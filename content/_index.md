@@ -47,7 +47,7 @@ sections:
               </p>
             </div>
 
-            <!-- Right Column: Clickable Video Embed (Grid Item 2) -->
+            <!-- Right Column: clickable Video Embed (Grid Item 2) -->
             <div class="hover-pop" style="position: relative; width: 100%; max-width: 700px; margin: 0 auto; border-radius: 12px; overflow: hidden; border: 2px solid rgba(255, 255, 255, 0.2); box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);">
               
               <!-- 16:9 Aspect Ratio Wrapper -->
