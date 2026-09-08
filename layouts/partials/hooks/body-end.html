@@ -8,18 +8,25 @@
 ></iframe>
 
 <style>
-  /* 1. Header Background & Text Color Override */
-  #site-header,
-  .page-header,
-  header.header {
-    background-color: #000000 !important; /* Change #000000 to 'transparent' or any hex color */
-    background: #000000 !important;
+  /* 1. Global CSS Variable Overrides for HugoBlox */
+  :root,
+  html.dark,
+  body {
+    --hb-color-header-bg: #000000 !important; /* Change #000000 to 'transparent' or any color */
+    --hb-color-footer-bg: #000000 !important;
+    --hb-color-background: #000000 !important;
   }
 
-  /* 2. Footer Background & Text Color Override */
+  /* 2. Direct Element Specificity Overrides */
+  #site-header.header,
+  header#site-header,
+  .page-header,
+  .header,
+  .navbar,
   .page-footer,
-  footer {
-    background-color: #000000 !important; /* Change #000000 to 'transparent' or any hex color */
+  footer,
+  body {
+    background-color: #000000 !important;
     background: #000000 !important;
   }
 
@@ -34,7 +41,7 @@
     display: none !important;
   }
 
-  /* 5. Ensure page text sits above 3D canvas and clicks pass through */
+  /* 5. Layer page content above 3D canvas while passing through mouse clicks */
   .page-body, .page-header, .page-footer {
     position: relative;
     z-index: 10;

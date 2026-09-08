@@ -1,0 +1,45 @@
+<script>
+document.addEventListener('mousemove', function(e) {
+  const card = e.target.closest('.balatro-card');
+  if (card) {
+    // 1. Stop the idle floating animation so we can tilt it
+    card.style.animation = 'none'; 
+    
+    // 2. Math to figure out where the mouse is on the card
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    // 3. Calculate rotation (max 20 degrees)
+    const rotateX = ((y - centerY) / centerY) * -20; 
+    const rotateY = ((x - centerX) / centerX) * 20;
+    
+    // 4. Apply 3D tilt
+    card.style.transform = `scale3d(1.05, 1.05, 1.05) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    
+    // 5. Apply Foil Glare directly under cursor
+    const glare = card.querySelector('.balatro-glare');
+    if (glare) {
+      glare.style.opacity = '1';
+      glare.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 60%)`;
+    }
+  }
+});
+
+// Reset the card when the mouse leaves
+document.addEventListener('mouseout', function(e) {
+  const card = e.target.closest('.balatro-card');
+  if (card && !card.contains(e.relatedTarget)) {
+    card.style.animation = 'balatroFloat 3.5s ease-in-out infinite';
+    card.style.transform = `rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+    
+    const glare = card.querySelector('.balatro-glare');
+    if (glare) {
+      glare.style.opacity = '0';
+    }
+  }
+});
+</script>
