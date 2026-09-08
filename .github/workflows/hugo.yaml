@@ -36,6 +36,8 @@ jobs:
           extended: true
 
       - name: Build with Hugo
+        env:
+          HUGO_SECURITY_EXEC_ALLOW: '^(dart-)?sass$|^go$|^git$|^node$|^postcss$|^tailwindcss$'
         run: hugo --minify --baseURL "https://www.madmoonstudios.co.uk/"
 
       - name: Upload artifact
