@@ -16,26 +16,30 @@ sections:
             border-color: rgba(255, 85, 0, 0.6) !important;
           }
 
-          /* Mobile-specific fix for iOS Safari flex centering clip */
+          /* Mobile Browser Chrome & Sticky Header Clearance */
           @media (max-width: 768px) {
             .hero-breakout-box {
-              min-height: auto !important; /* Kills negative margin math on tall stacked content */
-              padding-top: 8rem !important; /* Safely clears navbar + iOS top notch */
+              min-height: auto !important;
+              padding-top: calc(var(--navbar-height, 70px) + env(safe-area-inset-top, 20px) + 2rem) !important;
               padding-bottom: 3rem !important;
               justify-content: flex-start !important;
             }
             .hero-inner-container {
-              margin: 0 !important; /* Forces layout to start at top on mobile */
+              margin: 0 !important;
+            }
+            .logo-branding-wrap {
+              margin-top: 1.5rem !important; /* Explicit push below mobile UI */
+              margin-bottom: 1.5rem !important;
             }
             #section-hero iframe[src*="3d.html"] {
-              width: 90px !important;
-              height: 90px !important;
+              width: 85px !important;
+              height: 85px !important;
             }
             #section-hero .branding-title {
-              font-size: 1.4rem !important;
+              font-size: 1.35rem !important;
             }
             #section-hero h1 {
-              font-size: 1.5rem !important;
+              font-size: 1.45rem !important;
             }
           }
         </style>
@@ -43,11 +47,11 @@ sections:
         <!-- Viewport Breakout Container -->
         <div class="hero-breakout-box" style="width: 100vw; margin-left: calc(50% - 50vw); padding: 5rem 4vw 4vh 4vw; min-height: 85vh; text-align: left; color: #ffffff; font-family: 'Roboto', sans-serif; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box;">
           
-          <!-- Inner Constrainer (Centers on desktop, starts at top on mobile) -->
+          <!-- Inner Constrainer -->
           <div class="hero-inner-container" style="width: 100%; max-width: 1500px; margin: auto 0;">
             
-            <!-- Top-Left Logo & Branding -->
-            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem;">
+            <!-- Top-Left Logo & Branding (With Mobile Margin Push) -->
+            <div class="logo-branding-wrap" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem;">
               <iframe src="/3d.html" allowtransparency="true" style="width: 160px; height: 160px; border: none; background: transparent; display: block; flex-shrink: 0;"></iframe>
               <span class="branding-title" style="color: #FEFEE2; font-size: 2.4rem; font-weight: 800; line-height: 1.1; letter-spacing: 0.04em;">
                 MAD MOON<br>STUDIOS
