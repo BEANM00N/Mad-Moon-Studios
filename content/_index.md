@@ -26,10 +26,10 @@ sections:
               height: 100px !important;
             }
             .mobile-title {
-              font-size: 1.6rem !important;
+              font-size: 1.1rem !important;
             }
             .mobile-heading {
-              font-size: 1.75rem !important;
+              font-size: 1.25rem !important;
             }
           }
         </style>
