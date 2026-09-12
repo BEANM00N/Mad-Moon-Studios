@@ -116,7 +116,6 @@
       "relative",
       "right-4",
       "rounded",
-      "sticky",
       "text-[var(--hb-color-foreground)]",
       "text-[var(--hb-color-header-fg)]",
       "text-center",
@@ -125,13 +124,11 @@
       "text-sm",
       "text-xs",
       "theme-toggle",
-      "top-0",
       "top-20",
       "underline",
       "w-6",
       "w-full",
       "xl:space-x-8",
-      "z-30",
       "z-[9999]"
     ],
     "ids": [

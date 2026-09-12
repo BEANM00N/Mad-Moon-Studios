@@ -57,7 +57,7 @@ hugoblox:
   header:
     enable: true
     style: navbar # navbar | navbar-simple | minimal
-    sticky: true
+    sticky: false
     align: center # left | center | right
     search: false
     theme_toggle: true
