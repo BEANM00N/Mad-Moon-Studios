@@ -16,32 +16,38 @@ sections:
             border-color: rgba(255, 85, 0, 0.6) !important;
           }
 
-          /* Mobile scaling targeting HTML element selectors directly */
+          /* Mobile-specific fix for iOS Safari flex centering clip */
           @media (max-width: 768px) {
+            .hero-breakout-box {
+              min-height: auto !important; /* Kills negative margin math on tall stacked content */
+              padding-top: 8rem !important; /* Safely clears navbar + iOS top notch */
+              padding-bottom: 3rem !important;
+              justify-content: flex-start !important;
+            }
+            .hero-inner-container {
+              margin: 0 !important; /* Forces layout to start at top on mobile */
+            }
             #section-hero iframe[src*="3d.html"] {
-              width: 100px !important;
-              height: 100px !important;
+              width: 90px !important;
+              height: 90px !important;
             }
             #section-hero .branding-title {
-              font-size: 1.6rem !important;
+              font-size: 1.4rem !important;
             }
             #section-hero h1 {
-              font-size: 1.65rem !important;
-            }
-            .hero-breakout-box {
-              padding-top: 6rem !important; /* Extra clearance for sticky navbar */
+              font-size: 1.5rem !important;
             }
           }
         </style>
 
-        <!-- Viewport Breakout: Uses justify-content: flex-start to prevent top-clipping on mobile -->
-        <div class="hero-breakout-box" style="width: 100vw; margin-left: calc(50% - 50vw); padding: 5rem 4vw 4vh 4vw; min-height: 85vh; text-align: left; color: #ffffff; font-family: 'Roboto', sans-serif; display: flex; flex-direction: column; justify-content: flex-start; box-sizing: border-box;">
+        <!-- Viewport Breakout Container -->
+        <div class="hero-breakout-box" style="width: 100vw; margin-left: calc(50% - 50vw); padding: 5rem 4vw 4vh 4vw; min-height: 85vh; text-align: left; color: #ffffff; font-family: 'Roboto', sans-serif; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box;">
           
           <!-- Inner Constrainer (Centers on desktop, starts at top on mobile) -->
-          <div style="width: 100%; max-width: 1500px; margin: auto 0;">
+          <div class="hero-inner-container" style="width: 100%; max-width: 1500px; margin: auto 0;">
             
             <!-- Top-Left Logo & Branding -->
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem;">
               <iframe src="/3d.html" allowtransparency="true" style="width: 160px; height: 160px; border: none; background: transparent; display: block; flex-shrink: 0;"></iframe>
               <span class="branding-title" style="color: #FEFEE2; font-size: 2.4rem; font-weight: 800; line-height: 1.1; letter-spacing: 0.04em;">
                 MAD MOON<br>STUDIOS
