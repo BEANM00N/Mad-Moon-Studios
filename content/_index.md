@@ -16,44 +16,44 @@ sections:
             border-color: rgba(255, 85, 0, 0.6) !important;
           }
 
-          /* Mobile scaling only */
+          /* Mobile scaling targeting HTML element selectors directly */
           @media (max-width: 768px) {
-            .mobile-breakout {
-              padding-top: 20rem !important; /* Pushes safely below sticky header */
-            }
-            .mobile-logo {
+            #section-hero iframe[src*="3d.html"] {
               width: 100px !important;
               height: 100px !important;
             }
-            .mobile-title {
+            #section-hero .branding-title {
               font-size: 1.6rem !important;
             }
-            .mobile-heading {
-              font-size: 1.75rem !important;
+            #section-hero h1 {
+              font-size: 1.65rem !important;
+            }
+            .hero-breakout-box {
+              padding-top: 6rem !important; /* Extra clearance for sticky navbar */
             }
           }
         </style>
 
-        <!-- Viewport Breakout: Forces HugoBlox to allow 100% full screen width on desktop -->
-        <div class="mobile-breakout" style="width: 100vw; margin-left: calc(50% - 50vw); padding: 4vh 4vw; min-height: 85vh; text-align: left; color: #ffffff; font-family: 'Roboto', sans-serif; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box;">
+        <!-- Viewport Breakout: Uses justify-content: flex-start to prevent top-clipping on mobile -->
+        <div class="hero-breakout-box" style="width: 100vw; margin-left: calc(50% - 50vw); padding: 5rem 4vw 4vh 4vw; min-height: 85vh; text-align: left; color: #ffffff; font-family: 'Roboto', sans-serif; display: flex; flex-direction: column; justify-content: flex-start; box-sizing: border-box;">
           
-          <!-- Inner Constrainer -->
-          <div style="width: 100%; max-width: 1500px; margin: 0 auto;">
+          <!-- Inner Constrainer (Centers on desktop, starts at top on mobile) -->
+          <div style="width: 100%; max-width: 1500px; margin: auto 0;">
             
             <!-- Top-Left Logo & Branding -->
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem;">
-              <iframe src="/3d.html" allowtransparency="true" class="mobile-logo" style="width: 160px; height: 160px; border: none; background: transparent; display: block; flex-shrink: 0;"></iframe>
-              <span class="mobile-title" style="color: #FEFEE2; font-size: 2.4rem; font-weight: 800; line-height: 1.1; letter-spacing: 0.04em;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+              <iframe src="/3d.html" allowtransparency="true" style="width: 160px; height: 160px; border: none; background: transparent; display: block; flex-shrink: 0;"></iframe>
+              <span class="branding-title" style="color: #FEFEE2; font-size: 2.4rem; font-weight: 800; line-height: 1.1; letter-spacing: 0.04em;">
                 MAD MOON<br>STUDIOS
               </span>
             </div>
 
             <!-- Inline Flexbox Split -->
-            <div style="display: flex; flex-wrap: wrap; gap: 4rem; align-items: center; width: 100%;">
+            <div style="display: flex; flex-wrap: wrap; gap: 3.5rem; align-items: center; width: 100%;">
               
               <!-- Left Column: Text Box -->
               <div style="flex: 1.15 1 450px; background: rgba(18, 18, 18, 0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 20px; padding: 1.8rem; box-shadow: 0 20px 30px rgba(0, 0, 0, 0.6);">
-                <h1 class="mobile-heading" style="font-size: 2.4rem; font-weight: 800; line-height: 1.2; color: #ffffff; margin-top: 0; margin-bottom: 1.25rem;">
+                <h1 style="font-size: 2.4rem; font-weight: 800; line-height: 1.2; color: #ffffff; margin-top: 0; margin-bottom: 1.25rem;">
                   Mad Moon Studios is an indie game development team based in Belfast
                 </h1>
                 
