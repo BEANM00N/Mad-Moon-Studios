@@ -19,7 +19,7 @@ sections:
           /* Mobile scaling only */
           @media (max-width: 768px) {
             .mobile-breakout {
-              padding-top: 6.5rem !important; /* Pushes safely below sticky header */
+              padding-top: 20rem !important; /* Pushes safely below sticky header */
             }
             .mobile-logo {
               width: 100px !important;
